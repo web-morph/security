@@ -65,6 +65,7 @@ publishing {
             from(components["java"])
             artifact(tasks["sourcesJar"])
             artifact(tasks["javadocJar"])
+            artifactId = "security"
         }
     }
     repositories {

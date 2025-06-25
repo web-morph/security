@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly(project(":security"))
+    compileOnly(project(":core"))
 
     api("org.springframework.boot:spring-boot-starter-webflux:3.5.0")
     api("org.springframework.boot:spring-boot-starter-security:3.5.0")
@@ -55,6 +55,7 @@ publishing {
             from(components["java"])
             artifact(tasks["sourcesJar"])
             artifact(tasks["javadocJar"])
+            artifactId = "security-webflux"
         }
     }
     repositories {
