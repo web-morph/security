@@ -44,7 +44,7 @@ tasks {
         dependsOn("sourcesJar", "javadocJar")
     }
     jar {
-        enabled = false
+        enabled = true
     }
 }
 
