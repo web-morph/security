@@ -3,6 +3,7 @@ package com.github.webmorph.security.account.repository;
 import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.webmorph.security.account.model.Account;
+import com.github.webmorph.security.configuration.bearer.BearerReactiveAuthenticationManager;
 import lombok.RequiredArgsConstructor;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.UserManager;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class AccountRepository {
     private final LuckPerms luckPerms;
     private final PasswordEncoder passwordEncoder;
+    private final BearerReactiveAuthenticationManager authenticationManager;
 
     /**
      * In-memory async cache of resolved {@link Account} instances,
@@ -108,7 +110,7 @@ public class AccountRepository {
         final String lowerCaseUsername = username.toLowerCase();
         return Mono.fromFuture(this.cache.get(uuid, (key, ignored) ->
                 Mono.fromFuture(userManager.loadUser(uuid, lowerCaseUsername))
-                        .map(user -> new Account(user, userManager, this.passwordEncoder))
+                        .map(user -> new Account(user, userManager, this.passwordEncoder, this.authenticationManager))
                         .doOnNext(account -> account.setUsername(lowerCaseUsername))
                         .flatMap(account -> account.save().then(Mono.just(account)))
                         .toFuture()));

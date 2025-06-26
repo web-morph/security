@@ -1,5 +1,6 @@
 package com.github.webmorph.security.account.model;
 
+import com.github.webmorph.security.configuration.bearer.BearerReactiveAuthenticationManager;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.luckperms.api.model.data.NodeMap;
@@ -35,6 +36,7 @@ public class Account {
     private final User user;
     private final UserManager userManager;
     private final PasswordEncoder passwordEncoder;
+    private final BearerReactiveAuthenticationManager authenticationManager;
     private final AtomicBoolean usernameUpdated = new AtomicBoolean(false);
 
     /**
@@ -195,6 +197,7 @@ public class Account {
     public UUID getUuid() {
         return this.user.getUniqueId();
     }
+
     /**
      * Returns the username associated with this account.
      * <p>
@@ -221,5 +224,18 @@ public class Account {
                         this.userManager.savePlayerData(this.getUuid(), this.getUsername()) :
                         CompletableFuture.completedFuture(null))
                 .then(Mono.fromFuture(() -> this.userManager.saveUser(user)));
+    }
+
+    /**
+     * Generates a JWT token for the current authenticated account.
+     * <p>
+     * The token can optionally have an extended expiration time if {@code rememberMe} is set to {@code true}.
+     * This token can later be used for stateless authentication of the user.
+     *
+     * @param rememberMe whether to generate a long-lived "remember me" token
+     * @return a {@link Mono} emitting the generated JWT as a {@link String}
+     */
+    public Mono<String> generateToken(boolean rememberMe) {
+        return this.authenticationManager.generateJWT(this, rememberMe);
     }
 }
