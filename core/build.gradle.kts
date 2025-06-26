@@ -1,5 +1,5 @@
 group = "com.github.webmorph"
-version = "1.1.0"
+version = "1.1.1"
 
 plugins {
     `java-library`
@@ -19,7 +19,7 @@ dependencies {
     // Mixin
     api("net.lenni0451.classtransform:core:1.14.1")
     // Permissions
-    api("com.github.webmorph:permission:1.0.0")
+    api("com.github.webmorph:permission:1.0.1")
     // JWT
     api("com.auth0:java-jwt:4.2.1")
     // EventBus
