@@ -19,7 +19,7 @@ dependencies {
     // Mixin
     api("net.lenni0451.classtransform:core:1.14.1")
     // Permissions
-    api("com.github.webmorph:permission:1.0.2")
+    api("com.github.webmorph:permission:1.0.4")
     // JWT
     api("com.auth0:java-jwt:4.2.1")
     // EventBus
