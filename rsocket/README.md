@@ -6,7 +6,7 @@ Implements RSocket JWT-based security using LuckPerms and Spring's ReactiveMetho
 <p align="center">
 <a href="https://github.com/web-morph/security?tab=LGPL-3.0-1-ov-file"><img alt="License" src="https://img.shields.io/github/license/web-morph/security"></a>
 <a href="https://docs.gradle.org/8.14/release-notes.html"><img src="https://img.shields.io/badge/Gradle-8.14-brightgreen.svg?colorB=469C00&logo=gradle"></a>
-<a href="https://repo.jyraf.com/service/rest/v1/search/assets/download?sort=version&repository=maven-releases&maven.groupId=com.github.webmorph&maven.artifactId=security-rsocket&maven.extension=jar&maven.classifier=" target="_blank"><img alt="Download" src="https://img.shields.io/nexus/r/com.github.webmorph/security-rsocket?server=https%3A%2F%2Frepo.jyraf.com"></a>
+<a href="https://repo.billmarssoft.com/api/maven/latest/file/releases/com/github/webmorph/security-rsocket?extension=jar" target="_blank"><img alt="Download" src="https://repo.billmarssoft.com/api/badge/latest/releases/com/github/webmorph/security-rsocket"></a>
 </p>
 
 ---
@@ -21,7 +21,7 @@ Implements RSocket JWT-based security using LuckPerms and Spring's ReactiveMetho
 
 ```kts
 repositories {
-    maven("https://repo.jyraf.com/repository/maven-public/")
+    maven("https://repo.billmarssoft.com/public/")
 }
 
 dependencies {
@@ -34,7 +34,7 @@ dependencies {
 ```groovy
 repositories {
     maven {
-        url 'https://repo.jyraf.com/repository/maven-public/'
+        url 'https://repo.billmarssoft.com/public/'
     }
 }
 
