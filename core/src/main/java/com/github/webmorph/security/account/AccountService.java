@@ -44,7 +44,7 @@ public class AccountService {
         return this.accountRepository.findByUsername(username)
                 .flatMap(account -> {
                     if (!account.passwordMatches(password)) return Mono.empty();
-                    return this.authenticationManager.generateJWT(account, rememberMe);
+                    return account.generateToken(rememberMe);
                 })
                 .switchIfEmpty(Mono.error(Throwable::new))
                 .onErrorMap(throwable -> new BadCredentialsException());
@@ -54,14 +54,13 @@ public class AccountService {
      * Registers a new account with the given username and password.
      * <p>
      * If the username already exists, an {@link AccountAlreadyExistsException} is thrown.
-     * Otherwise, a new {@link Account} is created, its metadata is initialized,
-     * and a JWT token is generated and returned.
+     * Otherwise, a new {@link Account} is created, its metadata is initialized and returned.
      *
      * @param username the desired username (case-insensitive)
      * @param password the raw password to be hashed and stored
-     * @return a {@link Mono} emitting a signed JWT token for the newly created account
+     * @return a {@link Mono} emitting a newly created account
      */
-    public Mono<String> createAccount(String username, String password) {
+    public Mono<Account> createAccount(String username, String password) {
         return this.accountRepository.existsByUsername(username)
                 .filter(Boolean::booleanValue)
                 .flatMap(exists -> Mono.error(new AccountAlreadyExistsException()))
@@ -70,7 +69,7 @@ public class AccountService {
                 .flatMap(account -> {
                     account.setMetadata("username", username.toLowerCase());
                     account.setMetadata("password", this.passwordEncoder.encode(password));
-                    return account.save().then(Mono.defer(() -> this.authenticationManager.generateJWT(account, true)));
+                    return account.save().thenReturn(account);
                 });
     }
 }

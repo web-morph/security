@@ -1,1 +1,1 @@
-rootProject.name = "rsocket"
+rootProject.name = "security-rsocket"
