@@ -163,7 +163,7 @@ public class Account {
      * @return true if matches
      */
     public boolean passwordMatches(String password) {
-        return this.passwordEncoder.matches(this.getMetadata("password"), password);
+        return this.passwordEncoder.matches(password, this.getMetadata("password"));
     }
 
     /**
