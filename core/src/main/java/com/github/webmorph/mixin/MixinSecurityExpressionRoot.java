@@ -56,4 +56,8 @@ public abstract class MixinSecurityExpressionRoot extends SecurityExpressionRoot
     public boolean hasPermission(String permission) {
         return ((Account) this.getPrincipal()).hasPermission(permission);
     }
+
+    public boolean hasGroup(String group) {
+        return this.hasPermission("group." + group);
+    }
 }
