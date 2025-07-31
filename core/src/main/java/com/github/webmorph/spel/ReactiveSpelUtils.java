@@ -1,4 +1,4 @@
-package com.github.webmorph.util;
+package com.github.webmorph.spel;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.expression.EvaluationException;
