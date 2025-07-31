@@ -1,5 +1,5 @@
 group = "com.github.webmorph"
-version = "1.1.7"
+version = "1.1.8"
 
 plugins {
     `java-library`
@@ -12,6 +12,8 @@ repositories {
 }
 
 dependencies {
+    // Reflection
+    api("dev.ckateptb.commons:Reflect:3.0.3")
     // Reactor
     api("io.projectreactor:reactor-core:3.7.7")
     // Spring
