@@ -1,24 +1,21 @@
 package com.github.webmorph.security.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.webmorph.security.account.AccountService;
-import com.github.webmorph.security.account.event.AccountAuthenticateEvent;
-import io.netty.buffer.ByteBufAllocator;
-import io.rsocket.metadata.AuthMetadataCodec;
-import io.rsocket.metadata.WellKnownMimeType;
+import com.github.webmorph.security.configuration.api.AuthHolder;
+import com.github.webmorph.security.configuration.bearer.BearerAuthenticationToken;
+import io.rsocket.RSocket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.MimeType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import reactor.core.publisher.Mono;
+
+import java.util.UUID;
 
 /**
  * Handles authentication requests for both RSocket and HTTP clients.
@@ -72,13 +69,15 @@ public class RSocketAuthenticateController {
      */
     @PreAuthorize("isAnonymous()")
     @MessageMapping("account.auth")
+    @SuppressWarnings("ConstantConditions")
     public Mono<AuthenticateResponse> auth(RSocketRequester requester, @Payload AuthenticateRequest request) {
-        return this.auth(request).flatMap(response -> requester
-                .metadata(AuthMetadataCodec.encodeBearerMetadata(
-                        ByteBufAllocator.DEFAULT,
-                        response.token.toCharArray()
-                ), MimeType.valueOf(WellKnownMimeType.MESSAGE_RSOCKET_AUTHENTICATION.getString()))
-                .sendMetadata().thenReturn(response));
+        return this.auth(request).doOnNext(response -> {
+            DecodedJWT token = JWT.decode(response.token);
+            RSocket rsocket = requester.rsocket();
+            if (rsocket == null) return;
+            ((AuthHolder) rsocket).setAuth(() -> this.accountService.findByUuid(UUID.fromString(token.getSubject()))
+                    .map(account -> new BearerAuthenticationToken(account, token)));
+        });
     }
 
     /**
