@@ -47,7 +47,7 @@ public class AccountService {
                     return account.generateToken(rememberMe);
                 })
                 .switchIfEmpty(Mono.error(Throwable::new))
-                .onErrorMap(throwable -> new BadCredentialsException());
+                .onErrorMap(throwable -> BadCredentialsException.INVALID_CREDENTIALS);
     }
 
     /**
