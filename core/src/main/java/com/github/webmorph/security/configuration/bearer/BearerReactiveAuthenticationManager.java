@@ -3,6 +3,7 @@ package com.github.webmorph.security.configuration.bearer;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.github.webmorph.security.account.event.AccountAuthenticateEvent;
+import com.github.webmorph.security.account.exception.BadCredentialsException;
 import com.github.webmorph.security.account.model.Account;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -92,7 +93,7 @@ public class BearerReactiveAuthenticationManager implements ReactiveAuthenticati
                     .build()
                     .verify(token.getCredentials());
             return true;
-        }).onErrorReturn(false);
+        }).onErrorMap(throwable -> BadCredentialsException.EXPIRED_OR_INVALID_TOKEN);
     }
 
     /**
